@@ -1,0 +1,6 @@
+framework module Pods_githubBookmarkTests {
+  umbrella header "Pods-githubBookmarkTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
