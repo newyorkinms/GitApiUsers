@@ -10,15 +10,41 @@ import UIKit
 import Alamofire
 import AlamofireImage
 
-class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+protocol GitApiDelegate {
+    func deleteBookmark(user : GitUserInfo)
+}
+
+class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, GitApiDelegate {
+    /**
+     북마크에서 삭제된 유저 정보 불러와 테이블 Cell 수정 
+     */
+    func deleteBookmark(user: GitUserInfo) {
+        for (index , userInfo) in dataList.enumerated() {
+            if userInfo.loginId == user.loginId{
+                userInfo.bookmarkCheck = false
+                
+                let indexpath = IndexPath(item: index, section: 0)
+                let cell = self.tblUsers.cellForRow(at: indexpath) as! GitUserTableViewCell
+                let img = UIImage(named: CommonConst.strBookmarkImgEmpy)
+                cell.btnBookmark.setImage(img, for: .normal)
+            }
+        }
+    }
+    
     @IBOutlet weak var txtSearch: UITextField!
     @IBOutlet weak var tblUsers: UITableView!
     
+    var delegate : GitApiDelegate!
     var dataList = Array<GitUserInfo>()
     var dataSection = Array<String>()
     var curPage:Int = 1
     
     var beforeTask = DispatchWorkItem{}
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.delegate = self
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -156,9 +182,7 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
         return 57.5;
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+ 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if( self.dataList.count > 0){
             self.tblUsers.isHidden = false
@@ -229,6 +253,7 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
      */
     @IBAction func clickLocalBookmark(_ sender: UIButton) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "LocalBookmarkViewController") as! LocalBookmarkViewController
+        vc.gitApiVc = self
         self.present(vc, animated: false, completion: nil)
     }
     

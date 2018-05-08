@@ -16,7 +16,8 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
     
     var dataList = [String:Array<GitUserInfo>]()
     var dataSection = Array<String>()
-    
+    var gitApiVc:GitApiViewController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,6 +48,7 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
             self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData())
             self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
             self.tblUsers.reloadData()
+            self.tblUsers.reloadSectionIndexTitles()
         }
         self.tblUsers.setContentOffset(.zero, animated: true)
     }
@@ -68,18 +70,25 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
     
     func gitUserSearchLocal( searchName : String? ){
         if let name = searchName , name.count > 0 {
-            
             self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData(searchName: name))
             self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
+            self.tblUsers.reloadSectionIndexTitles()
             self.tblUsers.reloadData()
         }else{
             //빈 값일 경우 초기화
-            self.dataList.removeAll()
-            self.dataSection.removeAll()
-            self.tblUsers.reloadData()
+            self.tableReset()
         }
     }
-    
+    /**
+     테이블 초기화
+     */
+    func tableReset(){
+        self.dataList.removeAll()
+        self.dataSection.removeAll()
+        self.tblUsers.reloadSectionIndexTitles()
+        self.tblUsers.reloadData()
+        
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell", for: indexPath) as! GitUserTableViewCell
         
@@ -120,6 +129,8 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
                 self.dataList[sectionKey]?.remove(at: indexPath.row)
                 self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
                 self.tblUsers.reloadData()
+                self.tblUsers.reloadSectionIndexTitles()
+                self.gitApiVc.delegate.deleteBookmark(user: userInfo)
             }
         }
         
@@ -160,8 +171,9 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
                 if DBManager.shared.deleteGituserData(gituser: userInfo) {
                     self.dataList[sectionKey]?.remove(at: row)
                     self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
+                    self.tblUsers.reloadSectionIndexTitles()
                     self.tblUsers.reloadData()
-                    
+                    self.gitApiVc.delegate.deleteBookmark(user: userInfo)
                 }
             }
         }
