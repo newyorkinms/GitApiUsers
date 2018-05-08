@@ -13,8 +13,7 @@ import AlamofireImage
 class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     @IBOutlet weak var txtSearch: UITextField!
     @IBOutlet weak var tblUsers: UITableView!
-    var url_search : String = "https://api.github.com/search/users?q=%@&page=%d"
-
+    
     var dataList = Array<GitUserInfo>()
     var dataSection = Array<String>()
     var curPage:Int = 1
@@ -32,19 +31,19 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
         self.tblUsers.register(nib, forCellReuseIdentifier: "GitUserTableViewCell")
         
         txtSearch.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
- 
+        
     }
-
+    
     /**
-      유저 검색 필드 실시간 이벤트 감지
+     유저 검색 필드 실시간 이벤트 감지
      */
     @objc func textFieldDidChange(_ textField: UITextField) {
         
         //self.tblUsers.setContentOffset(.zero, animated: false)
         self.beforeTask.cancel()
         self.beforeTask = DispatchWorkItem { self.gitUserSearchApi(searchName: textField.text ) }
-
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5, execute: beforeTask)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.35, execute: beforeTask)
     }
     
     /**
@@ -62,14 +61,14 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
         }
         return true
     }
-
+    
     /**
      GitAPI 유저 검색 메소드
      */
     func gitUserSearchApi( searchName : String? ){
         curPage = 1
         if let name = searchName , name.count > 0 {
-            let totalUrl = String( format: url_search,  name,curPage)
+            let totalUrl = String( format: CommonNetwrok.urlGithubSearchUrl,  name,curPage)
             Alamofire.request(totalUrl)
                 .responseJSON { response in
                     guard response.result.isSuccess else {
@@ -85,23 +84,32 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
                             self.tblUsers.reloadData()
                             
                             return
+                        }else{
+                            self.tableReset()
                         }
                     }
             }
         }else{
             //빈 값일 경우 초기화
-            self.curPage = 1
-            self.dataList.removeAll()
-            self.dataSection.removeAll()
-            self.tblUsers.reloadData()
+            self.tableReset()
         }
+    }
+    /**
+     테이블 초기화
+     */
+    func tableReset(){
+        self.curPage = 1
+        self.dataList.removeAll()
+        self.dataSection.removeAll()
+        self.tblUsers.reloadData()
+        
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell", for: indexPath) as! GitUserTableViewCell
         let userInfo = self.dataList[ indexPath.row ]
-  
+        
         cell.lblUserName.text = userInfo.loginId
-
+        
         if( userInfo.avataImg.size.width <= 0 ){
             Alamofire.request(userInfo.avatarUrl).responseImage { response in
                 if let image = response.result.value {
@@ -111,14 +119,14 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
         }else{
             cell.imgProfile.image = userInfo.avataImg
         }
-       
+        
         cell.btnBookmark.tag = indexPath.row
         cell.btnBookmark.addTarget(self, action: #selector( GitApiViewController.bookmarkClick(sender:) ), for: .touchUpInside)
         if( userInfo.bookmarkCheck ){
-            let img = UIImage(named: "starfull.png")
+            let img = UIImage(named: CommonConst.strBookmarkImgeFull)
             cell.btnBookmark.setImage(img, for: .normal)
         }else{
-            let img = UIImage(named: "star.png")
+            let img = UIImage(named: CommonConst.strBookmarkImgEmpy)
             cell.btnBookmark.setImage(img, for: .normal)
         }
         return cell
@@ -132,7 +140,7 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
             let cell = tableView.cellForRow(at: indexPath) as! GitUserTableViewCell
             let userInfo = self.dataList[indexPath.row]
             if( !userInfo.bookmarkCheck ){
-                let img = UIImage(named: "starfull.png")
+                let img = UIImage(named: CommonConst.strBookmarkImgeFull)
                 cell.btnBookmark.setImage(img, for: .normal)
                 userInfo.bookmarkCheck = true
                 self.dataList[ indexPath.row ] = userInfo
@@ -141,17 +149,22 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
             }
         }
         
-        Utils.okAndCancelAlert(viewcontroller:self , title: "즐겨찾기에서 추가 할까요", message: "", okTitle: "추가",cancelTitle: "취소", okAction: deleteAction, cancelAction: nil)
+        Utils.okAndCancelAlert(viewcontroller:self , title: CommonConst.strBookmarkRegist, message: "", okTitle: CommonConst.strBookmarkRegistOk,cancelTitle: CommonConst.strBookmarkRegistCancel, okAction: deleteAction, cancelAction: nil)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return 57.5;
     }
-
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if( self.dataList.count > 0){
+            self.tblUsers.isHidden = false
+        }else{
+            self.tblUsers.isHidden = true
+        }
         return self.dataList.count
     }
     /**
@@ -162,7 +175,7 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
             self.curPage += 1
             if let name = self.txtSearch.text {
                 
-                let totalUrl = String( format: url_search,  name,curPage)
+                let totalUrl = String( format: CommonNetwrok.urlGithubSearchUrl,  name,curPage)
                 Alamofire.request(totalUrl)
                     .responseJSON { response in
                         guard response.result.isSuccess else {
@@ -201,14 +214,14 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
             let row = sender.tag
             let userInfo = self.dataList[row]
             if( !userInfo.bookmarkCheck ){
-                let img = UIImage(named: "starfull.png")
+                let img = UIImage(named: CommonConst.strBookmarkImgeFull)
                 sender.setImage(img, for: .normal)
                 userInfo.bookmarkCheck = true
                 self.dataList[ row ] = userInfo
                 DBManager.shared.insertGitUserData(gituser: userInfo)
             }
         }
-        Utils.okAndCancelAlert(viewcontroller:self , title: "즐겨찾기에서 추가 할까요", message: "", okTitle: "추가",cancelTitle: "취소", okAction: deleteAction, cancelAction: nil)
+        Utils.okAndCancelAlert(viewcontroller:self , title: CommonConst.strBookmarkRegist, message: "", okTitle: CommonConst.strBookmarkRegistOk,cancelTitle: CommonConst.strBookmarkRegistCancel, okAction: deleteAction, cancelAction: nil)
     }
     
     /**

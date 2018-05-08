@@ -16,10 +16,10 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
     
     var dataList = [String:Array<GitUserInfo>]()
     var dataSection = Array<String>()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.tblUsers.delegate = self
         self.tblUsers.dataSource = self
         self.txtSearch.delegate = self
@@ -30,20 +30,20 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
         txtSearch.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
         //처음 화면 열었을 경우 모든 인원을 보여줌.
-  
+        
         self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData())
         self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
         self.tblUsers.reloadData()
     }
-
- 
+    
+    
     /**
      유저 검색 필드 이벤트 감지
      */
     @objc func textFieldDidChange(_ textField: UITextField) {
         if (textField.text?.count)! > 0 {
             self.gitUserSearchLocal(searchName: textField.text )
-        }else{  //빈 문자열일 경우 전체 검색 
+        }else{  //빈 문자열일 경우 전체 검색
             self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData())
             self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
             self.tblUsers.reloadData()
@@ -68,12 +68,10 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
     
     func gitUserSearchLocal( searchName : String? ){
         if let name = searchName , name.count > 0 {
-
+            
             self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData(searchName: name))
             self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
             self.tblUsers.reloadData()
-            
-            
         }else{
             //빈 값일 경우 초기화
             self.dataList.removeAll()
@@ -98,14 +96,15 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
         }else{
             cell.imgProfile.image = userInfo.avataImg
         }
+        
         cell.btnBookmark.accessibilityHint = String(indexPath.section)
         cell.btnBookmark.tag = indexPath.row
         cell.btnBookmark.addTarget(self, action: #selector( LocalBookmarkViewController.bookmarkClick(sender:) ), for: .touchUpInside)
         if( userInfo.bookmarkCheck ){
-            let img = UIImage(named: "starfull.png")
+            let img = UIImage(named: CommonConst.strBookmarkImgeFull)
             cell.btnBookmark.setImage(img, for: .normal)
         }else{
-            let img = UIImage(named: "star.png")
+            let img = UIImage(named: CommonConst.strBookmarkImgEmpy)
             cell.btnBookmark.setImage(img, for: .normal)
         }
         return cell
@@ -124,9 +123,9 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
             }
         }
         
-        Utils.okAndCancelAlert(viewcontroller:self , title: "즐겨찾기에서 삭제할까요", message: "", okTitle: "삭제",cancelTitle: "취소", okAction: deleteAction, cancelAction: nil)
+        Utils.okAndCancelAlert(viewcontroller:self , title: CommonConst.strBookmarkRemove, message: "", okTitle: CommonConst.strBookmarkRemoveOk,cancelTitle: CommonConst.strBookmarkRemoveCancel, okAction: deleteAction, cancelAction: nil)
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return 57.5;
@@ -162,11 +161,12 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
                     self.dataList[sectionKey]?.remove(at: row)
                     self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
                     self.tblUsers.reloadData()
+                    
                 }
             }
         }
         
-        Utils.okAndCancelAlert(viewcontroller:self , title: "즐겨찾기에서 삭제할까요", message: "", okTitle: "삭제",cancelTitle: "취소", okAction: deleteAction, cancelAction: nil)
+        Utils.okAndCancelAlert(viewcontroller:self , title: CommonConst.strBookmarkRemove, message: "", okTitle: CommonConst.strBookmarkRemoveOk,cancelTitle: CommonConst.strBookmarkRemoveCancel, okAction: deleteAction, cancelAction: nil)
     }
     /**
      API 페이지로 이동

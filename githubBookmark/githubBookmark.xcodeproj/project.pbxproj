@@ -14,6 +14,7 @@
 		4609F780209D92F9000393A4 /* GitUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4609F77F209D92F9000393A4 /* GitUserTableViewCell.swift */; };
 		460B6336209F200900872A86 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460B6335209F200900872A86 /* Utils.swift */; };
 		4657C031209EA83800CCDAC0 /* GitUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4657C030209EA83800CCDAC0 /* GitUserInfo.swift */; };
+		4672B96820A1BA5C00893C04 /* CommonConst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4672B96720A1BA5C00893C04 /* CommonConst.swift */; };
 		46EB5C04209D2E45007BEB75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EB5C03209D2E45007BEB75 /* AppDelegate.swift */; };
 		46EB5C06209D2E45007BEB75 /* GitApiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EB5C05209D2E45007BEB75 /* GitApiViewController.swift */; };
 		46EB5C09209D2E45007BEB75 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 46EB5C07209D2E45007BEB75 /* Main.storyboard */; };
@@ -56,6 +57,7 @@
 		4609F77F209D92F9000393A4 /* GitUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitUserTableViewCell.swift; sourceTree = "<group>"; };
 		460B6335209F200900872A86 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		4657C030209EA83800CCDAC0 /* GitUserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitUserInfo.swift; sourceTree = "<group>"; };
+		4672B96720A1BA5C00893C04 /* CommonConst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonConst.swift; sourceTree = "<group>"; };
 		46EB5C00209D2E45007BEB75 /* githubBookmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = githubBookmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46EB5C03209D2E45007BEB75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		46EB5C05209D2E45007BEB75 /* GitApiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitApiViewController.swift; sourceTree = "<group>"; };
@@ -166,6 +168,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4672B96620A1BA4B00893C04 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				4672B96720A1BA5C00893C04 /* CommonConst.swift */,
+			);
+			name = Common;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		46EB5BF7209D2E45007BEB75 = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +210,7 @@
 				46ED11B7209EE41000D0DDBE /* GitUserTableViewCell.xib */,
 				46EB5C0C209D2E45007BEB75 /* LaunchScreen.storyboard */,
 				46EB5C0F209D2E45007BEB75 /* Info.plist */,
+				4672B96620A1BA4B00893C04 /* Common */,
 				4657C02F209EA7D000CCDAC0 /* Model */,
 				460B6334209F1FFA00872A86 /* Util */,
 				460B632E209EEC0C00872A86 /* Resouce */,
@@ -461,6 +473,7 @@
 				46EB5C06209D2E45007BEB75 /* GitApiViewController.swift in Sources */,
 				46EB5C04209D2E45007BEB75 /* AppDelegate.swift in Sources */,
 				4609F780209D92F9000393A4 /* GitUserTableViewCell.swift in Sources */,
+				4672B96820A1BA5C00893C04 /* CommonConst.swift in Sources */,
 				46FCDFD0209FE89A00784E6E /* LocalBookmarkViewController.swift in Sources */,
 				4657C031209EA83800CCDAC0 /* GitUserInfo.swift in Sources */,
 				46FCDFD7209FEE0000784E6E /* DBManager.swift in Sources */,
