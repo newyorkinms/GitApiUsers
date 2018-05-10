@@ -96,15 +96,13 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
         let userInfo = self.dataList[sectionKey]![ indexPath.row ]
         
         cell.lblUserName.text = userInfo.loginId
-        if( userInfo.avataImg.size.width <= 0 ){
-            Alamofire.request(userInfo.avatarUrl).responseImage { response in
-                if let image = response.result.value {
-                    cell.imgProfile.image = image
-                }
+        
+        Alamofire.request(userInfo.avatarUrl).responseImage { response in
+            if let image = response.result.value {
+                cell.imgProfile.image = image
             }
-        }else{
-            cell.imgProfile.image = userInfo.avataImg
         }
+      
         
         cell.btnBookmark.accessibilityHint = String(indexPath.section)
         cell.btnBookmark.tag = indexPath.row
