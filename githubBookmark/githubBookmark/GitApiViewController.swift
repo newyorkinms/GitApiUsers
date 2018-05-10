@@ -136,15 +136,13 @@ class GitApiViewController: UIViewController ,UITableViewDelegate, UITableViewDa
         
         cell.lblUserName.text = userInfo.loginId
         
-        if( userInfo.avataImg.size.width <= 0 ){
-            Alamofire.request(userInfo.avatarUrl).responseImage { response in
-                if let image = response.result.value {
-                    cell.imgProfile.image = image
-                }
+        
+        Alamofire.request(userInfo.avatarUrl).responseImage { response in
+            if let image = response.result.value {
+                cell.imgProfile.image = image
             }
-        }else{
-            cell.imgProfile.image = userInfo.avataImg
         }
+       
         
         cell.btnBookmark.tag = indexPath.row
         cell.btnBookmark.addTarget(self, action: #selector( GitApiViewController.bookmarkClick(sender:) ), for: .touchUpInside)
