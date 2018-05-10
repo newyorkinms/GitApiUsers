@@ -15,32 +15,19 @@ class GitUserInfo {
     var loginId : String
     var avatarUrl : String
     var bookmarkCheck : Bool
-    var avataImg : UIImage
+    
     init(loginId:String, avatarUrl:String){
         self.loginId = loginId
         self.avatarUrl = avatarUrl
         self.bookmarkCheck = false
-        self.avataImg = UIImage()
-        Alamofire.request(self.avatarUrl).responseImage { response in
-            if let image = response.result.value {
-                self.avataImg = image
-            }
-        }
-        
+
     }
     
     init(seq:Int, loginId:String, avatarUrl:String, bookmarkCheck:String){
         self.seq = seq
         self.loginId = loginId
         self.avatarUrl = avatarUrl
-        self.bookmarkCheck = bookmarkCheck == "Y" ? true : false
-        self.avataImg = UIImage()
-        Alamofire.request(self.avatarUrl).responseImage { response in
-            if let image = response.result.value {
-                self.avataImg = image
-            }
-        }
-        
+        self.bookmarkCheck = bookmarkCheck == "Y" ? true : false 
     }
     /**
      GitApi 로 부터 받은 json 을 GituserInfo 형식으로 파싱
