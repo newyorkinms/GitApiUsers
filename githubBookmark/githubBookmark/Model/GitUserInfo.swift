@@ -11,7 +11,7 @@ import Alamofire
 import AlamofireImage
 
 class GitUserInfo {
-    var seq : Int!
+    var seq : Int?
     var loginId : String
     var avatarUrl : String
     var bookmarkCheck : Bool
@@ -22,7 +22,7 @@ class GitUserInfo {
         self.bookmarkCheck = false
 
     }
-    
+
     init(seq:Int, loginId:String, avatarUrl:String, bookmarkCheck:String){
         self.seq = seq
         self.loginId = loginId

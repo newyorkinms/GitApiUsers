@@ -69,15 +69,14 @@ class LocalBookmarkViewController: UIViewController ,UITableViewDelegate, UITabl
     }
     
     func gitUserSearchLocal( searchName : String? ){
-        if let name = searchName , name.count > 0 {
-            self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData(searchName: name))
-            self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
-            self.tblUsers.reloadSectionIndexTitles()
-            self.tblUsers.reloadData()
-        }else{
-            //빈 값일 경우 초기화
+        guard let name = searchName , name.count > 0 else {
             self.tableReset()
+            return
         }
+        self.dataList = GitUserInfo.convertGitUsers(items: DBManager.shared.selectGituserData(searchName: name))
+        self.dataSection = GitUserInfo.getSectionList(userList: self.dataList )
+        self.tblUsers.reloadSectionIndexTitles()
+        self.tblUsers.reloadData()
     }
     /**
      테이블 초기화

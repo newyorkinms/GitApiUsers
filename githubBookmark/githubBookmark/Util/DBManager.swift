@@ -160,7 +160,11 @@ class DBManager  {
     func deleteGituserData(gituser : GitUserInfo ) -> Bool{
         var result = false
         if openDatabase(){
-            let query = "delete from \(database_name) where seq = \( Int( gituser.seq ))"
+            guard let seq = gituser.seq else{
+                database.close()
+                return result
+            }
+            let query = "delete from \(database_name) where seq = \( Int( seq ))"
             do{
                 try database.executeUpdate(query, values: nil)
                 result = true

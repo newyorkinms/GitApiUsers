@@ -19,9 +19,7 @@ class Utils {
         guard let value = val else { return str }
         if( 0xac00 > value ){return str}
         let x = (value - 0xac00) / 28 / 21
-        
         let cho = UnicodeScalar(0x1100 + x) //초성
-
         return String(cho!)
     }
  
